@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="server\node_modules\**" />
+    <EmbeddedResource Remove="server\node_modules\**" />
+    <None Remove="server\node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Install for iis\" />
+  </ItemGroup>
+
+</Project>

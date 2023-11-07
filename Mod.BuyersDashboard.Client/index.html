@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>מנוע חיפוש </title>
+  </head>
+  <style>
+    body {
+      background-color:white;
+    }
+  </style>
+  <script>
+ 
+    function  detectBrowser() {
+    
+      var ieVer = ieVersion();
+    var _result = {};
+    _result.isFirefox = typeof InstallTrigger !== 'undefined' || window.globalStorage !== undefined;
+    _result.isChrome = !!window.chrome && !(!!window.opera || !!window.opr);
+    _result.isIE = ieVer > 0;
+    _result.isEdge = !_result.isIE && !!window.StyleMedia;
+    _result.isIE11 = !!window.MSInputMethodContext && !!document.documentMode || ieVer == 11;
+    _result.IE_MSE = !!('MediaSource' in window || window.MediaSource);
+    _result.IE_Compat = ieVer == 11 && document.documentMode == 10;
+    return _result;
+  }
+  
+  function   ieVersion () {
+    var ua = window.navigator.userAgent;
+    if (ua.indexOf("Trident/7.0") > -1)
+        return 11;
+    else if (ua.indexOf("Trident/6.0") > -1)
+        return 10;
+    else if (ua.indexOf("Trident/5.0") > -1)
+        return 9;
+    else
+        return 0;  // not IE9, 10 or 11
+}
+
+  var website = location.href
+ 
+  const browser = detectBrowser();
+  if (browser.isIE) 
+  {
+ 
+  window.activeXStartedChrome = true;
+
+  try {
+    var oFile = new ActiveXObject("Scripting.FileSystemObject");
+    var commandtoRun = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+    if (!oFile.FileExists(commandtoRun)) {
+      commandtoRun = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+    }
+    if (oFile.FileExists(commandtoRun)) {
+      var oShell = new ActiveXObject("Shell.Application");
+      //var commandtoRun = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";							
+      oShell.ShellExecute(commandtoRun, website, "", "open", "1");
+    }
+    else {
+      alert('יש לוודא שדפדפן כרום מותקן במחשב זה');
+    }
+  }
+  catch (e) {
+    console.log(e);
+    alert('יש לוודא שדפדפן כרום מותקן במחשב זה');
+  } 
+  }
+  </script>
+  <body dir="rtl" >
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+

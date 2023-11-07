@@ -1,0 +1,242 @@
+﻿///elastic setup    index //////////// *******   ///////
+
+
+get _cat/indices/?v
+
+
+
+delete /entities
+
+
+
+GET entities/_search
+{
+  "version": true, 
+  "_source" : false,
+  "size":100,
+  "fields":["EntityId","_version","UpdatedAt"],
+  "query" : {
+    
+    "match_all": {}
+  }
+}
+
+GET entities/_doc/4441231371/
+
+
+GET entities/_search
+{
+  
+  "size":100,
+  "fields":["TotalAmmountBeforeVat","EntityId","_version","UpdatedAt"],
+  "query" : {
+    
+    "match_all": {}
+  }
+}
+
+POST  entities/_delete_by_query
+{
+  "query" : {
+    "match_all": {}
+  }
+}
+
+
+delete /entities
+
+PUT entities/_doc/1
+{
+  "dummy":"dummy"
+}
+
+
+
+ 
+ #########
+
+
+POST  entities/_delete_by_query
+{
+  "query" : {
+    "match_all": {}
+  }
+}
+
+
+# FINAL 
+ DELETE /entities
+  
+get _cat/indices/?v
+  
+PUT entities
+{
+  "settings" :{
+    "analysis": {
+      "analyzer": {
+        "my_analyzer":{
+          "tokenizer" :"my_tokenizer"
+        }
+      },
+      "tokenizer" :{
+        "my_tokenizer" :{
+          "type":"edge_ngram",
+           "min_gram" :3,
+            "max_gram": 5,
+            "token_chars" :["letter","digit"]
+        }
+      }
+    }
+    }
+}
+
+    put /entities/_mapping
+{
+
+      "properties" : {
+        "EntityId" : {
+          "type" : "text"
+        },
+        "Items" : {
+          "properties" : {
+            "Ammount" : {
+              "type" : "float"
+            },
+            "LineId" : {
+              "type" : "text"
+            },
+            "ManufactureCatalogNumber" : {
+              "type" : "text"
+            },
+            "ManufactureId" : {
+              "type" : "text"
+            },
+            "MaterialCatalogNumber" : {
+              "type" : "text"
+            },
+            "RequirmentLineNumber" : {
+              "type" : "text"
+            },
+            "ShortDescription" : {
+              "type" : "text",
+              "fields" : {
+                "melingo" : {
+                  "type" : "text",
+                  "analyzer" : "melingo_hebrew_index",
+                  "search_analyzer" : "melingo_hebrew_query"
+                }
+              }
+            },
+            "SupplierCatalogNumber" : {
+              "type" : "text",
+              "fields" : {
+                "keyword" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "TextItems" : {
+              "type" : "text",
+              "fields" : {
+                "melingo" : {
+                  "type" : "text",
+                  "analyzer" : "melingo_hebrew_index",
+                  "search_analyzer" : "melingo_hebrew_query"
+                }
+              }
+            }
+          }
+        },
+        "PurachaseOrganiztionId" : {
+          "type" : "text"
+        },
+        "PurchaseRequestGroup" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "RequirmentNumber" : {
+          "type" : "text"
+        },
+        "SpecialConditions" : {
+          "type" : "text",
+          "fields" : {
+            "melingo" : {
+              "type" : "text",
+              "analyzer" : "melingo_hebrew_index",
+              "search_analyzer" : "melingo_hebrew_query"
+            }
+          }
+        },
+        "SupplierCatalogNumber" : {
+          "type" : "text"
+        },
+        "SupplierId" : {
+          "type" : "text"
+        },
+        "SupplierName" : {
+          "type" : "text"
+        },
+         "Currency" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "Title" : {
+          "type" : "text",
+          "fields" : {
+            "melingo" : {
+              "type" : "text",
+              "analyzer" : "melingo_hebrew_index",
+              "search_analyzer" : "melingo_hebrew_query"
+            }
+          }
+        },
+        "TotalAmmountBeforeVat" : {
+           "type" : "float"
+        },
+        "Type" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "UpdatedAt" : {
+          "type" : "date"
+        },
+        "autocomplete": {
+              "type": "search_as_you_type"
+       
+      }
+    }
+  }
+}
+  
+  get entities/_mapping
+
+#########   end  final 
+  
+  
+  GET entities/_search
+{
+  "query" : {
+    "match_all": {}
+  }
+}
+
+get entities/_mapping
+
+
+

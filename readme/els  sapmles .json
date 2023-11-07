@@ -1,0 +1,226 @@
+//AUTOCOMPLETER   
+
+delete /my-index
+
+POST /_reindex
+{
+  "source": {
+    "index": "orders"
+  },
+  "dest": {
+    "index": "my-index"
+  }
+}
+POST /_refresh
+
+
+
+/// add mappings 
+PUT my-index/_mapping
+{
+  
+    "properties": {
+      "autocomplete": {
+              "type": "search_as_you_type"
+       
+      }
+    }
+  }
+
+get /my-index/_mappings
+
+
+
+POST my-index/_update_by_query
+{
+   "script" : "ctx._source.remove('autocomplete')" 
+}
+POST my-index/_update_by_query
+{
+  "script" : "ctx._source.autocomplete = ctx._source.salesman.name + ' ' + ctx._source.sales_channel + ' ' +ctx._source.status "
+}
+
+
+
+GET /my-index/_doc/1
+
+GET /my-index/_search
+{
+  "query": {
+    "match_all": { }
+  }
+}
+
+GET my-index/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "store processed",
+      "type": "bool_prefix",
+      "fields": [
+        "autocomplete",
+        "autocomplete._2gram",
+        "autocomplete._3gram"
+      ]
+    }
+  }
+}
+
+/////////////////////////////////
+
+
+
+
+
+
+get _cat/indices/?v
+
+get _aliases?pretty=true
+
+
+GET /clients/_search
+{
+  "query": {
+    "match_all": { }
+  }
+}
+POST /clients/_search
+select * from clietns
+
+get /clients/_search?pretty=true
+
+
+#delete  /clients
+
+get /clients/_mappings
+
+POST /products/_search
+{"size":10,"from":0,
+"_source": false,
+ "fields": ["description"  ,"name"],
+"query": {
+    "multi_match": {
+
+      "fields":  [ "tags", "description"  ,"name^5"],
+      "query":     "letti",
+      "fuzziness": "AUTO",
+      "operator":   "or"
+    }},
+   "highlight" : {
+    "pre_tags" : ["<span class='highlighter'>"],
+    "post_tags" : ["</span>"],
+    "fields" : {
+      "*" :  {"fragment_size" : 150, "number_of_fragments" : 3}
+    }
+   }
+,
+"sort": [
+        { "price": { "order": "desc" }},
+        { "_id": { "order": "desc" }}
+    ]
+    
+}
+
+
+
+GET products/_search
+{
+  "query": {
+    "match_all": { }
+  }
+}
+
+
+
+
+POST /products/_search
+{"size":10,"from":0,
+
+
+"query": {
+    "multi_match": {
+      "fields":  [ "tags", "description"  ,"name^5"],
+      "query":     "Nullam",
+      "fuzziness": "AUTO",
+      "operator":   "or"
+    }},
+
+
+"highlight" : {
+    "pre_tags" : ["<span class='highlighter'>"],
+    "post_tags" : ["</span>"],
+    "fields" : {
+      "*" :  {"fragment_size" : 150, "number_of_fragments" : 3}
+    }
+   }
+,
+"sort": [
+        { "price": { "order": "desc" }},
+        { "_id": { "order": "desc" }}
+    ]
+    
+}
+
+GET /_cat/indices
+
+GET orders/_search/?pretty
+{
+ 
+  "query": {
+    "match_all": { }
+  }
+}
+
+get /orders/_mapping
+
+POST /orders/_search
+{"size":500,
+"aggs":{"by_sales_channel^5":{"terms":{"field":"sales_channel^5.keyword","size":20}},"by_salesman.name":{"terms":{"field":"salesman.name.keyword","size":20}},"by_status":{"terms":{"field":"status.keyword","size":20}},"by__id":{"terms":{"field":"_id.keyword","size":20}},"by_amount":{"terms":{"field":"amount.keyword","size":20}}},"query":{"bool":{"must":[{"multi_match":{"fields":["sales_channel^5","salesman.name","status","_id","amount"],"query":"gert Cla Gra","lenient":true,"fuzziness":"AUTO","operator":"or"}},{"terms":{"status.keyword":["processed","completed","cancelled"]}},{"terms":{"sales_channel.keyword":["store","web","phone"]}}]}}}
+
+
+
+
+
+POST /orders/_search
+{"size":100,"from":0,
+ "_source": false,
+ "fields": ["salesman.name"  ,"sales_channel"],
+ "aggs": {
+     "by_sales_channel": {"terms": {"field": "sales_channel.keyword","size":20}},
+     "by_product_id":   {"terms": {"field": "lines.product_id"}},
+     "by_salesman.name":   {"terms": {"field": "salesman.name.keyword"}}
+  },
+"highlight" : {
+    "pre_tags" : ["<span class='highlighter'>"],
+    "post_tags" : ["</span>"],
+    "fields" : {
+      "*" :  {"fragment_size" : 150, "number_of_fragments" : 3}
+    }
+   }
+,
+"query": {
+  "bool":{
+    "must":[
+      {
+        "multi_match": {
+          "fields":  [ "sales_channel^5", "salesman.name"  ,"status"],
+          "query":     "gert",
+          "fuzziness": "AUTO",
+          "operator":   "or"
+        }
+      },
+      {"terms": {"status.keyword": ["completed","proceesed"]} },
+      {"terms": {"sales_channel.keyword": ["store","store1"]} }
+     
+      ]
+  }
+},
+
+"sort": [
+        { "_id": { "order": "desc" }}
+    ]
+}
+
+POST /orders/_search
+{"size":10,"from":0,"aggs":{"by_sales_channel":{"terms":{"field":"sales_channel.keyword","size":20}},"by_product_id":{"terms":{"field":"lines.product_id"}},"by_salesman.name":{"terms":{"field":"salesman.name.keyword"}}},"query":{"bool":{"must":[{"multi_match":{"fields":["sales_channel^5","salesman.name","status","_id","amount"],"query":"gert","lenient":true,"fuzziness":"AUTO","operator":"or"}},{"terms":{"status.keyword":["completed","proceesed"]}},{"terms":{"sales_channel.keyword":["store","store1"]}}]}},"sort":[{"lines.amount":{"order":"desc"}}]}
+

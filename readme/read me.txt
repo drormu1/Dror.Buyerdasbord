@@ -1,0 +1,190 @@
+run the server:
+..............
+run =>  "npm run dev"  in vscode, from server dir
+
+http://localhost:3001/api/test
+
+
+Client react
+=========
+"npm run dev"
+
+open chrome in no-cores mode
+
+http://localhost:5173
+
+with options authKey or param  or roleIds:
+
+localhost:3000/?appToken=xxx&term=store&roleIds=1,2,5,4
+
+
+Elstrtic search  7.5
+---------------------
+insert to elastic via coomand like:
+
+http://localhost:3001/load?file=books
+
+json samples in :
+C:\GIT\Elasticsearch-React\server\Loaders
+
+
+
+///elastic setup    index //////////// *******   ///////
+get _cat/indices/?v
+delete /entities-mashan
+PUT entities-mashan
+{
+  "settings" :{
+    "analysis": {
+      "analyzer": {
+        "my_analyzer":{
+          "tokenizer" :"my_tokenizer"
+        }
+      },
+      "tokenizer" :{
+        "my_tokenizer" :{
+          "type":"edge_ngram",
+           "min_gram" :3,
+            "max_gram": 5,
+            "token_chars" :["letter","digit"]
+        }
+      }
+    }
+    }
+}
+
+
+
+PUT entities-mashan/_doc/1000000000
+{
+  "dummey":"dummy"
+}
+
+put /entities-mashan/_mapping
+{
+
+      "properties" : {
+        "EntityId" : {
+          "type" : "text"
+        },
+        "Items" : {
+          "properties" : {
+            "Ammount" : {
+              "type" : "float"
+            },
+            "LineId" : {
+              "type" : "text"
+            },
+            "ManufactureCatalogNumber" : {
+              "type" : "text"
+            },
+            "ManufactureId" : {
+              "type" : "text"
+            },
+            "MaterialCatalogNumber" : {
+              "type" : "text"
+            },
+            "RequirmentLineNumber" : {
+              "type" : "text"
+            },
+            "ShortDescription" : {
+              "type" : "text",
+              "fields" : {
+                "melingo" : {
+                  "type" : "text",
+                  "analyzer" : "melingo_hebrew_index",
+                  "search_analyzer" : "melingo_hebrew_query"
+                }
+              }
+            },
+            "SupplierCatalogNumber" : {
+              "type" : "text",
+              "fields" : {
+                "keyword" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "TextItems" : {
+              "type" : "text",
+              "fields" : {
+                "melingo" : {
+                  "type" : "text",
+                  "analyzer" : "melingo_hebrew_index",
+                  "search_analyzer" : "melingo_hebrew_query"
+                }
+              }
+            }
+          }
+        },
+        "PurachaseOrganiztionId" : {
+          "type" : "text"
+        },
+        "PurchaseRequestGroup" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "RequirmentNumber" : {
+          "type" : "text"
+        },
+        "SpecialConditions" : {
+          "type" : "text",
+          "fields" : {
+            "melingo" : {
+              "type" : "text",
+              "analyzer" : "melingo_hebrew_index",
+              "search_analyzer" : "melingo_hebrew_query"
+            }
+          }
+        },
+        "SupplierCatalogNumber" : {
+          "type" : "text"
+        },
+        "SupplierId" : {
+          "type" : "text"
+        },
+        "SupplierName" : {
+          "type" : "text"
+        },
+        "Title" : {
+          "type" : "text",
+          "fields" : {
+            "melingo" : {
+              "type" : "text",
+              "analyzer" : "melingo_hebrew_index",
+              "search_analyzer" : "melingo_hebrew_query"
+            }
+          }
+        },
+        "TotalAmmountBeforeVat" : {
+           "type" : "float"
+        },
+        "Type" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "UpdatedAt" : {
+          "type" : "date"
+        },
+        "autocomplete": {
+              "type": "search_as_you_type"
+       
+      }
+    }
+  }
+}
+
+
+  
+  get entities-mashan/_mapping

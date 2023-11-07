@@ -1,0 +1,26 @@
+/* @media all {
+    .page-break {
+   
+    }
+  }
+  
+  @media print {
+    html, body {
+      height: initial !important;
+      overflow: initial !important;
+      -webkit-print-color-adjust: exact;
+    }
+  }
+  
+  @media print {
+    .page-break {
+        background: 'red';     
+      display: block;
+      page-break-before: auto;
+    }
+  }
+  
+  @page {
+    size: auto;   
+  } */
+
